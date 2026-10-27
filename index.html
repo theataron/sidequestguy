@@ -512,7 +512,7 @@ const t = k => (T[LANG||'en'][k] ?? k);
 /* ===== backend =====
    Paste your Google Apps Script web-app link (ending in /exec) between the quotes.
    Left empty, the page runs in demo mode with fake data stored on this phone only. */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxx0Hq6-rYV2rTBljdpN4ncuKhXxLMr5hnCrENAjLZIG6DUpiC_G73OORDRLgSQn6jO2w/exec';
 
 async function api(fn, ...args){
   if (!API_URL) return new Promise((res, rej) => setTimeout(() => { try{ res(Demo[fn](...args)); }catch(e){ rej(e); } }, 200));
