@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Side Quest Guy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@700&family=Permanent+Marker&family=Rock+Salt&family=Creepster&family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0716; --card:#1c1029; --card2:#271538; --line:#3e2656;
+  --txt:#f7effe; --mute:#b7a3cb; --orange:#ff7a1a; --orange2:#ffb347;
+  --slime:#a6ff3d; --purple:#b65cff; --pink:#ff4fa3; --h:9.5rem;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(60rem 30rem at 110% -10%, rgba(182,92,255,.28), transparent 60%),
+    radial-gradient(40rem 25rem at -20% 110%, rgba(255,122,26,.22), transparent 60%);
+  background-attachment:fixed;
+  color:var(--txt); font-family:Rubik,system-ui,sans-serif; font-size:16px; line-height:1.45;
+  min-height:100vh; overflow-x:hidden;
+}
+button,input,textarea{font:inherit;color:inherit}
+.display{font-family:Creepster,Rubik,cursive;font-weight:400;letter-spacing:.04em}
+[hidden]{display:none!important}
+
+/* floating spooks */
+#bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#bg span{position:absolute;font-size:1.6rem;opacity:.16;animation:float 14s linear infinite}
+@keyframes float{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-15vh) rotate(25deg)}}
+
+/* header + menu */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:.7rem 1rem;background:rgba(14,7,22,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{background:none;border:0;padding:0;font-size:1.45rem;color:var(--orange);cursor:pointer;text-shadow:0 0 14px rgba(255,122,26,.5)}
+.burger{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer}
+.burger i{display:block;width:20px;height:2px;background:var(--txt);border-radius:2px;box-shadow:0 6px 0 var(--txt),0 -6px 0 var(--txt)}
+.menu{position:fixed;inset:0;z-index:30;background:rgba(8,3,14,.92);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;padding:5rem 1.5rem 2rem;gap:.6rem}
+.menu button{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1rem 1.1rem;font-size:1.15rem;font-weight:600;cursor:pointer}
+.menu button .e{margin-right:.6rem}
+.menu .close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;padding:0;text-align:center;font-size:1.4rem}
+.menu .langsw{margin-top:auto;background:transparent;color:var(--mute);font-size:1rem}
+
+main{position:relative;z-index:1;max-width:30rem;margin:0 auto;padding:1.2rem 1rem 3rem}
+section{animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h1,h2{margin:.2rem 0 .4rem;line-height:1.05}
+h1{font-size:3.2rem;color:var(--orange);text-shadow:0 0 22px rgba(255,122,26,.45)}
+h2{font-size:2.3rem;color:var(--orange)}
+.kicker{color:var(--slime);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}
+.sub{color:var(--mute);margin:.2rem 0 1.2rem}
+
+.btn{display:block;width:100%;border:0;border-radius:18px;padding:1rem;font-size:1.1rem;font-weight:800;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(180deg,var(--orange2),var(--orange));color:#1a0b00;box-shadow:0 8px 28px rgba(255,122,26,.35)}
+.btn.slime{background:var(--slime);color:#102000;box-shadow:0 8px 28px rgba(166,255,61,.25)}
+.btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--txt)}
+.btn.link{background:none;color:var(--mute);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.btn[disabled]{opacity:.5}
+.stack{display:grid;gap:.7rem}
+
+/* language */
+#v-lang{min-height:80vh;display:flex;flex-direction:column;justify-content:center;text-align:center}
+#v-lang .pump{font-size:4.5rem;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(-6deg)}}
+#v-lang h1{font-size:3.6rem}
+.langbtn{font-size:1.35rem;padding:1.15rem}
+
+/* slot machine */
+.machine{position:relative;margin:1rem 0 1.1rem;padding:.9rem;border-radius:26px;
+  background:linear-gradient(160deg,#3a1d55,#1c0f2b);border:3px solid var(--orange);
+  box-shadow:0 0 0 4px #2a1440,0 0 40px rgba(255,122,26,.35)}
+.bulbs{display:flex;justify-content:space-between;padding:0 .3rem .6rem}
+.bulbs i{width:10px;height:10px;border-radius:50%;background:var(--orange2);box-shadow:0 0 10px var(--orange2);animation:blink 1s infinite}
+.bulbs i:nth-child(even){animation-delay:.5s;background:var(--slime);box-shadow:0 0 10px var(--slime)}
+.machine.spinning .bulbs i{animation-duration:.25s}
+@keyframes blink{50%{opacity:.25}}
+.window{position:relative;height:var(--h);overflow:hidden;border-radius:16px;background:#fff8ec;color:#1b0d26}
+.window::before,.window::after{content:"";position:absolute;left:0;right:0;height:28%;z-index:2;pointer-events:none}
+.window::before{top:0;background:linear-gradient(#fff8ec,rgba(255,248,236,0))}
+.window::after{bottom:0;background:linear-gradient(rgba(255,248,236,0),#fff8ec)}
+.reel{will-change:transform}
+.item{height:var(--h);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 1.1rem;font-weight:800;font-size:1.18rem;line-height:1.25}
+.item.q{font-family:Creepster,cursive;font-size:3rem;color:var(--orange);letter-spacing:.2em}
+.result-pop{animation:pop .45s ease}
+@keyframes pop{40%{transform:scale(1.04)}}
+.progress{display:flex;align-items:center;gap:.6rem;color:var(--mute);font-size:.92rem;margin-bottom:1rem}
+.bar{flex:1;height:8px;border-radius:9px;background:var(--card2);overflow:hidden}
+.bar b{display:block;height:100%;background:linear-gradient(90deg,var(--slime),var(--orange));width:0;transition:width .6s}
+.spinbtn{font-size:1.6rem;padding:1.15rem;letter-spacing:.12em;animation:pulse 1.8s infinite}
+@keyframes pulse{50%{box-shadow:0 8px 40px rgba(255,122,26,.65)}}
+.hint{color:var(--slime);font-weight:600;text-align:center;margin:.2rem 0 .4rem}
+.activebar{display:flex;gap:.6rem;align-items:center;width:100%;text-align:left;background:rgba(166,255,61,.1);border:1px solid rgba(166,255,61,.4);
+  border-radius:14px;padding:.7rem .9rem;margin-bottom:1rem;cursor:pointer}
+.activebar small{display:block;color:var(--slime);font-weight:800;text-transform:uppercase;font-size:.7rem;letter-spacing:.08em}
+
+/* accept */
+.ticket{position:relative;margin:1rem 0 1.2rem;padding:1.6rem 1.2rem;border-radius:22px;text-align:center;
+  background:linear-gradient(160deg,var(--orange2),var(--orange));color:#1a0b00;box-shadow:0 12px 40px rgba(255,122,26,.4)}
+.ticket .qt{font-size:1.55rem;font-weight:800;line-height:1.2}
+.ticket .tag{font-family:Creepster,cursive;font-size:1.3rem;letter-spacing:.08em;margin-bottom:.5rem;opacity:.85}
+.ticket.done{background:linear-gradient(160deg,#d4ff9a,var(--slime))}
+.note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1rem;margin-bottom:1rem}
+.note b{color:var(--orange2)}
+
+/* lists */
+.qbtn{display:flex;gap:.8rem;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:.95rem 1rem;font-weight:600;cursor:pointer;transition:border-color .15s}
+.qbtn:active{border-color:var(--orange)}
+.qbtn .n{flex:none;width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;background:var(--card2);color:var(--orange2);font-size:.85rem;font-weight:800}
+.qbtn .go{margin-left:auto;color:var(--orange);font-size:1.2rem}
+.done-list{margin-top:1.2rem;color:var(--mute)}
+.done-list summary{cursor:pointer;font-weight:600;padding:.4rem 0}
+.done-list li{margin:.35rem 0;text-decoration:line-through;text-decoration-color:rgba(166,255,61,.6)}
+.cta-bottom{margin-top:1.4rem}
+
+/* forms */
+textarea,input[type=text],input[type=password]{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem .95rem;outline:none;resize:vertical}
+textarea:focus,input:focus{border-color:var(--orange)}
+.count{font-size:.8rem;color:var(--mute);text-align:right;margin-top:-.4rem}
+.thanks{text-align:center;padding:1.4rem 1rem;border-radius:18px;background:rgba(166,255,61,.1);border:1px solid rgba(166,255,61,.4)}
+.thanks .big{font-size:3rem}
+
+/* wall */
+.brick{position:relative;margin:1.3rem -1rem 0;padding:1.6rem 1rem 2rem;min-height:22rem;overflow:hidden;
+  background-color:#3b1914;
+  background-image:
+    radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(8,3,14,.75) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='44'%3E%3Crect width='88' height='44' fill='%23200c0a'/%3E%3Crect x='2' y='2' width='40' height='18' fill='%234a221c'/%3E%3Crect x='46' y='2' width='40' height='18' fill='%23552820'/%3E%3Crect x='-20' y='24' width='40' height='18' fill='%23512620'/%3E%3Crect x='24' y='24' width='40' height='18' fill='%23461f1a'/%3E%3Crect x='68' y='24' width='40' height='18' fill='%234e241e'/%3E%3C/svg%3E");
+  box-shadow:inset 0 10px 30px rgba(0,0,0,.6)}
+.msgs{display:flex;flex-direction:column;gap:1.3rem}
+.tagw{position:relative;max-width:92%;word-wrap:break-word;line-height:1.15}
+.tagw .tx{display:block}
+.tagw .by{display:block;margin-top:.3rem;font-family:'Permanent Marker',cursive;font-size:.85rem;opacity:.75}
+.tagw.paint .tx{text-shadow:0 0 6px currentColor,0 0 18px currentColor,2px 2px 0 rgba(0,0,0,.9)}
+.tagw.paint .by{text-shadow:1px 1px 0 #000}
+.tagw.sticker{background:#fff4c9;color:#1b0d26;padding:.8rem .9rem .7rem;box-shadow:3px 5px 12px rgba(0,0,0,.6)}
+.tagw.sticker::before{content:"";position:absolute;top:-9px;left:50%;width:58px;height:18px;margin-left:-29px;background:rgba(255,255,255,.45);transform:rotate(-3deg)}
+.tagw.sticker .tx{text-shadow:none}
+.f0{font-family:'Permanent Marker',cursive}
+.f1{font-family:'Rock Salt',cursive}.f1 .tx{font-size:.72em}
+.f2{font-family:Bangers,cursive;letter-spacing:.06em}
+.f3{font-family:Caveat,cursive}.f3 .tx{font-size:1.25em}
+.brick .empty{font-family:'Permanent Marker',cursive;font-size:1.6rem;color:var(--slime);text-shadow:0 0 10px var(--slime);transform:rotate(-4deg);margin-top:4rem}
+.empty{color:var(--mute);text-align:center;padding:1.5rem 0}
+footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:.8rem;padding:0 1rem 2rem;opacity:.7}
+
+/* admin */
+.tabs{display:flex;gap:.4rem;margin:.6rem 0 1rem;overflow-x:auto}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:.5rem .9rem;font-weight:600;cursor:pointer}
+.tabs button.on{background:var(--orange);color:#1a0b00;border-color:var(--orange)}
+.acard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.9rem;margin-bottom:.7rem}
+.acard.isdone{opacity:.6}
+.acard .t{font-weight:600}
+.acard .t small{display:block;color:var(--mute);font-weight:400;margin-top:.2rem}
+.arow{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap}
+.arow button{flex:1;min-width:5.5rem;border:1px solid var(--line);background:var(--card2);border-radius:12px;padding:.65rem .5rem;font-weight:700;cursor:pointer}
+.arow .ok{background:var(--slime);color:#102000;border-color:var(--slime)}
+.arow .warn{color:var(--pink)}
+.edit{display:grid;gap:.5rem;margin-top:.6rem}
+.badge{display:inline-block;min-width:1.4rem;padding:0 .4rem;border-radius:999px;background:var(--pink);color:#fff;font-size:.75rem;text-align:center;margin-left:.3rem}
+.pill{font-size:.72rem;font-weight:800;text-transform:uppercase;padding:.1rem .5rem;border-radius:999px;background:var(--card2);color:var(--mute);margin-left:.4rem}
+
+/* quote + pitch */
+.quote{margin:0 0 1.1rem;padding:.9rem 1rem;border-left:4px solid var(--slime);background:rgba(166,255,61,.07);border-radius:0 14px 14px 0}
+.quote p{margin:0;font-size:1.15rem;font-weight:800;line-height:1.3}
+.quote cite{display:block;margin-top:.35rem;color:var(--mute);font-style:normal;font-size:.82rem}
+.pitch{margin-top:1.4rem;padding:1.2rem;border-radius:20px;text-align:center;background:linear-gradient(160deg,rgba(182,92,255,.25),rgba(255,79,163,.18));border:1px solid rgba(182,92,255,.5)}
+.pitch-h{font-size:1.7rem;color:var(--orange2)}
+.pitch p{margin:.4rem 0 1rem}
+a.btn{text-decoration:none;text-align:center}
+/* quote intro */
+#intro{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.6rem;cursor:pointer}
+.introbg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#2c1444 0%,#0b0512 72%)}
+.introbox{position:relative;max-width:24rem;width:100%;border-left:4px solid var(--slime);padding:.3rem 0 .3rem 1.1rem;transform-origin:0 0}
+.introq{margin:0;font-size:2.15rem;font-weight:800;line-height:1.18}
+.introq span{display:inline-block;opacity:0;transform:translateY(16px);filter:blur(8px);animation:word .7s cubic-bezier(.2,.7,.2,1) forwards}
+.introc{margin-top:.9rem;color:var(--mute);opacity:0;animation:word .7s forwards}
+.skip{position:absolute;bottom:2.2rem;left:0;right:0;text-align:center;color:var(--mute);font-size:.85rem;opacity:0;animation:word .7s 2s forwards}
+@keyframes word{to{opacity:1;transform:none;filter:none}}
+.hl{color:var(--slime);text-shadow:0 0 18px rgba(166,255,61,.55)}
+.quote .hl{text-shadow:none}
+
+/* footer, admin extras */
+footer div+div{margin-top:.25rem}
+.curev{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:.7rem .9rem;font-size:.92rem}
+.acard.live{border-color:var(--slime)}
+select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem .95rem;color:var(--txt)}
+
+/* party theme (non-Halloween events) */
+body[data-theme=party] .display{font-family:Bangers,Rubik,cursive;letter-spacing:.05em}
+body[data-theme=party] .item.q{font-family:Bangers,cursive}
+
+.menu .terms{background:transparent;border:0;color:var(--mute);font-size:.78rem;font-weight:400;text-decoration:underline;padding:.2rem 1.1rem;opacity:.55}
+input[type=search]{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem .95rem;outline:none;margin-bottom:.8rem;-webkit-appearance:none}
+.login{margin-top:2.5rem;opacity:.7}
+.done-list li{list-style:none;margin:.35rem 0}
+.done-list ul{padding:0}
+.redo{background:none;border:0;padding:0;color:var(--mute);text-align:left;cursor:pointer;text-decoration:line-through;text-decoration-color:rgba(166,255,61,.6)}
+body.busy #adminList{opacity:.6;pointer-events:none}
+/* v4 tweaks */
+.quote cite,.introc{text-align:right}
+main{padding-top:.8rem}
+#v-spin .quote{margin-bottom:.7rem;padding:.55rem .8rem}
+#v-spin .quote p{font-size:1rem}
+#v-spin .quote cite{font-size:.75rem;margin-top:.15rem}
+#v-spin h2{font-size:1.95rem}
+#v-spin .sub{margin:.1rem 0 .6rem;font-size:.95rem}
+:root{--h:7.6rem}
+.machine{margin:.5rem 0 .7rem;padding:.6rem}
+.bulbs{padding-bottom:.45rem}
+.progress{margin-bottom:.7rem}
+#postSpin{gap:.55rem}
+#postSpin .btn,#preSpin .btn{padding:.85rem}
+.spinbtn{padding:1rem!important}
+.walllink{margin-top:1.2rem;font-size:.95rem}
+.burger{position:relative}
+.peek{position:absolute;right:-8px;bottom:-12px;font-size:1.2rem;opacity:0;transform:scale(0);pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.peek.go{animation:peek 2.4s ease}
+@keyframes peek{0%{opacity:0;transform:scale(0) translateY(8px)}14%{opacity:1;transform:scale(1.3)}24%{transform:scale(1)}44%{transform:scale(1,.12)}50%{transform:scale(1)}62%{transform:scale(1,.12)}68%{transform:scale(1)}86%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0)}}
+.burger.flash{animation:bflash 2.4s ease}
+@keyframes bflash{15%,70%{border-color:var(--orange);box-shadow:0 0 18px rgba(255,122,26,.6)}}
+.wallform{padding:1rem;border-radius:18px;border:2px dashed var(--slime);background:rgba(166,255,61,.06);box-shadow:0 0 24px rgba(166,255,61,.12)}
+.wfh{font-family:'Permanent Marker',cursive;font-size:1.35rem;color:var(--slime);transform:rotate(-2deg);text-shadow:0 0 10px rgba(166,255,61,.5)}
+#toast{visibility:hidden;opacity:0}
+#toast.show{visibility:visible;opacity:1}
+/* admin */
+.sect{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);margin:1.4rem 0 .6rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 .8rem}
+.chips button{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:.4rem .75rem;font-size:.85rem;font-weight:600;cursor:pointer}
+.picklist{max-height:22rem;overflow:auto;border:1px solid var(--line);border-radius:14px;margin-bottom:.4rem}
+.pick{display:flex;gap:.7rem;align-items:flex-start;padding:.7rem .8rem;border-bottom:1px solid var(--line);cursor:pointer;font-weight:600;font-size:.95rem}
+.pick input{margin-top:.2rem;width:1.15rem;height:1.15rem;accent-color:var(--slime);flex:none}
+.pick small{display:block;color:var(--mute);font-weight:400;font-size:.8rem}
+.newev{border-color:var(--orange)}
+.details{margin-top:.8rem;border-top:1px solid var(--line);padding-top:.7rem;font-size:.9rem}
+.details ul{margin:.3rem 0 .8rem;padding-left:1.1rem;color:var(--mute)}
+#toast{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%) translateY(150%);z-index:50;background:var(--txt);color:var(--bg);
+  padding:.75rem 1.1rem;border-radius:14px;font-weight:600;transition:transform .3s;max-width:90vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
+</style>
+</head>
+<body>
+<div id="bg" aria-hidden="true"></div>
+
+<div id="intro" hidden>
+  <div class="introbg"></div>
+  <div class="introbox" id="introBox">
+    <p class="introq" id="introText"></p>
+    <div class="introc">— Neale Donald Walsch</div>
+  </div>
+  <div class="skip" data-i18n="tapSkip"></div>
+</div>
+
+<header class="top" id="top" hidden>
+  <button class="logo display" id="logo">Side Quest Guy</button>
+  <button class="burger" id="burger" aria-label="Menu"><i></i><span class="peek" id="peek" aria-hidden="true">👀</span></button>
+</header>
+
+<nav class="menu" id="menu" hidden>
+  <button class="close" id="menuClose" aria-label="Close">✕</button>
+  <button data-go="spin"><span class="e">🎰</span><span data-i18n="mSpin"></span></button>
+  <button data-go="choose"><span class="e">📜</span><span data-i18n="mChoose"></span></button>
+  <button data-go="invent"><span class="e">🧪</span><span data-i18n="mInvent"></span></button>
+  <button data-go="wall"><span class="e">🧱</span><span data-i18n="mWall"></span></button>
+  <button class="langsw" id="langSwitch">🌐 <span data-i18n="mLang"></span></button>
+  <button class="terms" data-go="admin" data-i18n="mTerms"></button>
+</nav>
+
+<main>
+  <!-- LANGUAGE -->
+  <section id="v-lang" hidden>
+    <div class="pump" id="langEmoji">🎃</div>
+    <div class="kicker" id="langEvent"></div>
+    <h1 class="display">Side Quest Guy</h1>
+    <p class="sub">Choose your language · Elige tu idioma</p>
+    <div class="stack">
+      <button class="btn primary langbtn" data-lang="en">🇬🇧 English</button>
+      <button class="btn primary langbtn" data-lang="es">🇪🇸 Español</button>
+    </div>
+  </section>
+
+  <!-- SPIN -->
+  <section id="v-spin" hidden>
+    <blockquote class="quote" id="quote"><p id="quoteText"></p><cite>— Neale Donald Walsch</cite></blockquote>
+    <button class="activebar" id="activeBar" hidden>
+      <span style="font-size:1.5rem">⚔️</span>
+      <span><small data-i18n="yourQuest"></small><span id="activeText"></span></span>
+    </button>
+    <div class="kicker" data-i18n="spinKicker"></div>
+    <h2 class="display" data-i18n="spinTitle"></h2>
+    <p class="sub" data-i18n="spinSub"></p>
+
+    <div class="machine" id="machine">
+      <div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="window"><div class="reel" id="reel"><div class="item q">? ? ?</div></div></div>
+    </div>
+
+    <p class="hint" id="repeatNote" hidden data-i18n="repeat"></p>
+    <div class="progress"><div class="bar"><b id="bar"></b></div><span id="progressTxt"></span></div>
+
+    <div id="preSpin" class="stack">
+      <button class="btn primary spinbtn display" id="spinBtn" data-i18n="spinBtn"></button>
+    </div>
+    <div id="postSpin" class="stack" hidden>
+      <button class="btn slime" id="acceptBtn" data-i18n="accept"></button>
+      <button class="btn ghost" id="againBtn" data-i18n="again"></button>
+      <p class="hint" id="pickyHint" hidden data-i18n="picky"></p>
+      <button class="btn ghost" id="chooseBtn" data-go="choose" data-i18n="spinChoose" hidden></button>
+    </div>
+    <p class="sub" id="allDone" hidden style="text-align:center" data-i18n="allDone"></p>
+    <button class="btn link walllink" data-go="wall" data-i18n="wallLink"></button>
+  </section>
+
+  <!-- ACCEPTED -->
+  <section id="v-accept" hidden>
+    <div class="kicker" id="accKicker"></div>
+    <div class="ticket" id="ticket">
+      <div class="tag">⚔️ Side Quest ⚔️</div>
+      <div class="qt" id="accText"></div>
+    </div>
+    <div class="note" id="accNote"></div>
+    <div class="stack">
+      <button class="btn ghost" id="accChange" data-i18n="change"></button>
+    </div>
+    <div class="pitch-slot"></div>
+  </section>
+
+  <!-- CHOOSE -->
+  <section id="v-choose" hidden>
+    <div class="kicker" data-i18n="chooseKicker"></div>
+    <h2 class="display" data-i18n="chooseTitle"></h2>
+    <p class="sub" data-i18n="chooseSub"></p>
+    <div class="stack" id="chooseList"></div>
+    <details class="done-list" id="doneWrap" hidden>
+      <summary><span data-i18n="doneTitle"></span> (<span id="doneCount"></span>)</summary>
+      <ul id="doneList"></ul>
+    </details>
+    <div class="cta-bottom"><button class="btn ghost" data-go="invent" data-i18n="noneOfThese"></button></div>
+  </section>
+
+  <!-- INVENT -->
+  <section id="v-invent" hidden>
+    <div class="kicker" data-i18n="inventKicker"></div>
+    <h2 class="display" data-i18n="inventTitle"></h2>
+    <p class="sub" data-i18n="inventSub"></p>
+    <form id="inventForm" class="stack">
+      <textarea id="inventText" rows="3" maxlength="220" required data-i18n-ph="inventPh"></textarea>
+      <div class="count"><span id="inventCount">0</span>/220</div>
+      <input type="text" id="inventName" maxlength="40" autocapitalize="off" autocorrect="off" data-i18n-ph="igPh">
+      <button class="btn primary" type="submit" data-i18n="inventSend"></button>
+    </form>
+    <div class="thanks" id="inventThanks" hidden>
+      <div class="big">😈</div>
+      <p id="inventThanksTxt"></p>
+      <button class="btn ghost" id="inventMore" data-i18n="inventMore"></button>
+    </div>
+    <div id="inventPitch" hidden><div class="pitch-slot"></div></div>
+    <div class="cta-bottom"><button class="btn link" data-go="wall" data-i18n="noIdea"></button></div>
+  </section>
+
+  <!-- WALL -->
+  <section id="v-wall" hidden>
+    <div class="kicker" data-i18n="wallKicker"></div>
+    <h2 class="display" data-i18n="wallTitle"></h2>
+    <p class="sub" data-i18n="wallSub"></p>
+    <form id="wallForm" class="stack wallform">
+      <div class="wfh" data-i18n="wallFormH"></div>
+      <textarea id="wallText" rows="2" maxlength="280" required data-i18n-ph="wallPh"></textarea>
+      <input type="text" id="wallName" maxlength="40" autocapitalize="off" autocorrect="off" data-i18n-ph="igPh">
+      <button class="btn primary" type="submit" data-i18n="wallSend"></button>
+    </form>
+    <div class="brick"><div class="msgs" id="msgs"></div></div>
+    <div class="pitch-slot"></div>
+  </section>
+
+  <!-- OFF DUTY (no event running) -->
+  <section id="v-off" hidden>
+    <div class="pump">😴</div>
+    <div class="kicker" data-i18n="offKicker"></div>
+    <h2 class="display" data-i18n="offTitle"></h2>
+    <p class="sub" data-i18n="offSub"></p>
+    <div class="stack">
+      <button class="btn ghost" data-go="invent" data-i18n="offInvent"></button>
+      <button class="btn ghost" data-go="wall" data-i18n="mWall"></button>
+    </div>
+    <div class="pitch-slot"></div>
+  </section>
+
+  <!-- ADMIN (behind "Terms and conditions") -->
+  <section id="v-admin" hidden>
+    <div id="tcCover">
+      <div class="kicker" data-i18n="tcKicker"></div>
+      <h2 class="display" data-i18n="tcTitle"></h2>
+      <p class="sub" data-i18n="tcTxt"></p>
+      <div class="stack"><button class="btn primary" data-go="spin" data-i18n="tcBack"></button></div>
+      <form id="loginForm" class="stack login">
+        <input type="password" id="pw" data-i18n-ph="tcPh" autocomplete="current-password">
+        <button class="btn link" type="submit" data-i18n="tcLogin"></button>
+      </form>
+    </div>
+    <div id="adminPanel" hidden>
+      <div class="kicker">Admin</div>
+      <h2 class="display">Quest Control</h2>
+      <div class="curev" id="curEv"></div>
+      <div class="tabs" id="tabs">
+        <button data-tab="quests" class="on">Quests</button>
+        <button data-tab="pending">Suggestions<span class="badge" id="pendBadge" hidden></span></button>
+        <button data-tab="msgs">Wall</button>
+        <button data-tab="events">Events</button>
+        <button data-tab="library">Library</button>
+        <button data-tab="add">+ Add</button>
+      </div>
+      <div id="adminList"></div>
+      <button class="btn link" id="adminRefresh">↻ Refresh</button>
+      <button class="btn link" id="adminLogout">Log out</button>
+    </div>
+  </section>
+</main>
+<footer><div id="footEvent"></div><div id="footLife"></div></footer>
+<div id="toast"></div>
+
+<template id="pitchTpl">
+  <div class="pitch">
+    <div class="pitch-h display" data-i18n="pitchH"></div>
+    <p data-i18n="pitchTxt"></p>
+    <a class="btn primary" href="https://instagram.com/aron_toth_" target="_blank" rel="noopener">📸 <span data-i18n="pitchBtn"></span></a>
+  </div>
+</template>
+
+<script>
+/* ===== storage (safe) ===== */
+const mem = {};
+const store = {
+  get(k){ try{ const v = localStorage.getItem(k); return v === null ? (k in mem ? mem[k] : null) : v; }catch(e){ return k in mem ? mem[k] : null; } },
+  set(k,v){ mem[k]=v; try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ delete mem[k]; try{ localStorage.removeItem(k); }catch(e){} }
+};
+
+/* ===== text ===== */
+const T = {
+  en:{
+    mSpin:'Spin a quest', mChoose:'Choose a quest', mInvent:'Invent a quest', mWall:'Leave an anonymous message', wallLink:'Or just leave an anonymous message on the wall 🧱', mLang:'Cambiar a español', mTerms:'Terms and conditions',
+    tcKicker:'Terms & Conditions', tcTitle:'Gotcha 👀', tcTxt:'Okay, confession: this is just a cover. This page is only for Side Quest Guy himself. But honestly? I’m amazed how interested you are in what I do. That much curiosity deserves a side quest — go back and spin one.', tcPh:'Password', tcLogin:'Log in (Side Quest Guy only)', tcBack:'Back to the fun 🎰',
+    quote:'“Life begins at the end of your comfort zone.”', quoteHl:2, tapSkip:'tap to continue',
+    yourQuest:'Your quest', spinKicker:'You found Side Quest Guy 👻', spinTitle:'Spin for a side quest',
+    spinSub:'Whatever comes up, we do it together. Tonight. No excuses.', spinBtn:'SPIN',
+    spinChoose:'I’d rather choose', accept:'I’m in! 🔥', again:'Spin again 🎰', picky:'Picky? Pick one yourself 👇',
+    allDone:'We did them ALL tonight?! Spin a repeat or invent a new one 👇', repeat:'Already done tonight — but we can do it again, better 😏', againTitle:'Done again? Tap to redo',
+    progress:'{d}/{t} done tonight',
+    accKicker:'Quest accepted ⚔️', accNote:'Now come up to me and <b>show me this screen</b>. Let’s do it! Once it’s done, I’ll tick it off 💀',
+    doneKicker:'Quest complete 🏆', doneNote:'We did it. Legend status unlocked. Ready for another one?',
+    change:'Pick a different one', anotherOne:'Another quest 🎰',
+    chooseKicker:'Your call', chooseTitle:'Pick your quest', chooseSub:'Still up for grabs — tap the one you want to do with me.',
+    doneTitle:'Already conquered', noneOfThese:'None of these? Invent your own 🧪',
+    inventKicker:'Your idea', inventTitle:'Give me a side quest',
+    inventSub:'You think you could make my night a lot more interesting with your side quest? Write it here!',
+    inventPh:'e.g. Let’s convince a stranger to…', igPh:'Your Instagram @ (optional)', namePh:'Your name (optional)', inventSend:'Send my quest',
+    inventThanks:'Sent! Come up to me so I can approve it — and then we do it together.',
+    inventThanksOff:'Saved! It might show up at my next adventure 😈', inventMore:'Send another one',
+    noIdea:'No ideas? Leave an anonymous message on the wall 🧱',
+    wallKicker:'100% anonymous', wallTitle:'The Wall', wallSub:'Leave an anonymous message on the wall. Confessions, compliments, chaos — no name needed.', wallFormH:'🎨 Spray your message', 
+    wallPh:'Write anything…', wallSend:'Spray it 🎨', wallEmpty:'Nothing yet. Be the first 👻', anon:'anonymous',
+    offKicker:'Off duty', offTitle:'Between adventures',
+    offSub:'You caught Side Quest Guy on a day off. No side quests running right now — but the next mission is loading…',
+    offInvent:'Suggest a side quest for next time 🧪',
+    pitchH:'Still here? 👀', pitchTxt:'Then I assume you like the idea 😏 Which tells me you’re a really cool person who’s down for extraordinary adventures. I’m Aron 👋 If you want more fun in Madrid in the future (or adventures somewhere else), add me!',
+    pitchBtn:'Add me on Instagram · @aron_toth_',
+    lifetime:'🏆 {n} side quests completed all-time', lifetime1:'🏆 1 side quest completed all-time',
+    now:'just now', min:'min ago', hr:'h ago', day:'d ago', err:'Couldn’t connect. Try again.', posted:'Sprayed 🎨'
+  },
+  es:{
+    mSpin:'Girar una quest', mChoose:'Elegir una quest', mInvent:'Inventar una quest', mWall:'Deja un mensaje anónimo', wallLink:'O simplemente deja un mensaje anónimo en el muro 🧱', mLang:'Switch to English', mTerms:'Términos y condiciones',
+    tcKicker:'Términos y condiciones', tcTitle:'¿Te pillé? 👀', tcTxt:'Vale, confieso: esto es solo una tapadera. Esta página es solo para el Side Quest Guy. Pero, sinceramente, me flipa lo interesado que estás en lo que hago. Tanta curiosidad merece una side quest — vuelve y gira una.', tcPh:'Contraseña', tcLogin:'Entrar (solo Side Quest Guy)', tcBack:'Volver a la diversión 🎰',
+    quote:'«La vida empieza donde termina tu zona de confort.»', quoteHl:3, tapSkip:'toca para continuar',
+    yourQuest:'Tu quest', spinKicker:'Has encontrado al Side Quest Guy 👻', spinTitle:'Gira y consigue una side quest',
+    spinSub:'Lo que salga, lo hacemos juntos. Esta noche. Sin excusas.', spinBtn:'GIRAR',
+    spinChoose:'Prefiero elegir yo', accept:'¡Me apunto! 🔥', again:'Girar otra vez 🎰', picky:'¿Exigente? Elige tú 👇',
+    allDone:'¿¡Las hemos hecho TODAS esta noche!? Gira para repetir o inventa una nueva 👇', repeat:'Ya la hicimos esta noche — pero podemos repetirla, y mejor 😏', againTitle:'¿Repetir? Toca para hacerla otra vez',
+    progress:'{d}/{t} hechas esta noche',
+    accKicker:'Quest aceptada ⚔️', accNote:'Ahora acércate y <b>enséñame esta pantalla</b>. ¡Vamos a hacerlo! Cuando esté hecha, la marco 💀',
+    doneKicker:'Quest completada 🏆', doneNote:'Lo hicimos. Estatus de leyenda desbloqueado. ¿Otra?',
+    change:'Elegir otra', anotherOne:'Otra quest 🎰',
+    chooseKicker:'Tú decides', chooseTitle:'Elige tu quest', chooseSub:'Aún disponibles — toca la que quieras hacer conmigo.',
+    doneTitle:'Ya conquistadas', noneOfThese:'¿Ninguna te convence? Inventa la tuya 🧪',
+    inventKicker:'Tu idea', inventTitle:'Dame una side quest',
+    inventSub:'¿Crees que puedes hacer mi noche mucho más interesante con tu side quest? ¡Escríbela aquí!',
+    inventPh:'p. ej. Convenzamos a un desconocido de…', igPh:'Tu Instagram @ (opcional)', namePh:'Tu nombre (opcional)', inventSend:'Enviar mi quest',
+    inventThanks:'¡Enviada! Acércate para que la apruebe y la hacemos juntos.',
+    inventThanksOff:'¡Guardada! Puede que aparezca en mi próxima aventura 😈', inventMore:'Enviar otra',
+    noIdea:'¿Sin ideas? Deja un mensaje anónimo en el muro 🧱',
+    wallKicker:'100% anónimo', wallTitle:'El Muro', wallSub:'Deja un mensaje anónimo en el muro. Confesiones, piropos, caos — sin nombre.', wallFormH:'🎨 Pinta tu mensaje', 
+    wallPh:'Escribe lo que quieras…', wallSend:'Píntalo 🎨', wallEmpty:'Nada todavía. Sé el primero 👻', anon:'anónimo',
+    offKicker:'Fuera de servicio', offTitle:'Entre aventuras',
+    offSub:'Has pillado al Side Quest Guy en su día libre. Ahora no hay side quests activas, pero la próxima misión está cargando…',
+    offInvent:'Propón una side quest para la próxima 🧪',
+    pitchH:'¿Sigues aquí? 👀', pitchTxt:'Entonces supongo que te gusta la idea 😏 Y eso me dice que eres una persona muy guay y con ganas de aventuras extraordinarias. Soy Aron 👋 Si quieres más planes divertidos en Madrid (o aventuras en otros sitios), ¡agrégame!',
+    pitchBtn:'Agrégame en Instagram · @aron_toth_',
+    lifetime:'🏆 {n} side quests completadas en total', lifetime1:'🏆 1 side quest completada en total',
+    now:'ahora', min:'min', hr:'h', day:'d', err:'No se pudo conectar. Inténtalo otra vez.', posted:'Pintado 🎨'
+  }
+};
+let LANG = store.get('sqg_lang');
+const t = k => (T[LANG||'en'][k] ?? k);
+
+/* ===== backend =====
+   Paste your Google Apps Script web-app link (ending in /exec) between the quotes.
+   Left empty, the page runs in demo mode with fake data stored on this phone only. */
+const API_URL = '';
+
+async function api(fn, ...args){
+  if (!API_URL) return new Promise((res, rej) => setTimeout(() => { try{ res(Demo[fn](...args)); }catch(e){ rej(e); } }, 200));
+  const res = fn === 'getPublicData'
+    ? await fetch(API_URL + '?fn=getPublicData&t=' + Date.now())
+    : await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({fn, args}) });
+  const j = await res.json();
+  if (!j.ok) throw new Error(j.error || 'Error');
+  return j.data;
+}
+const DEMO_SEED = [
+  ['Swap costumes (or clothes) with me and take a pic','Intercambia el disfraz (o la ropa) conmigo y hazte una foto'],
+  ['Kiss me (I\'m gay 🏳️‍🌈)','Bésame (soy gay 🏳️‍🌈)'],
+  ['Find someone from a country neither of us has been to and take a pic with them','Encuentra a alguien de un país en el que ninguno de los dos haya estado y haceos una foto'],
+  ['Take pics with people in red, blue, green and yellow outfits','Haceos fotos con gente vestida de rojo, azul, verde y amarillo'],
+  ['Let me wingman you','Déjame hacerte de wingman'],
+  ['Put me on your shoulders, or let me put you on mine','Súbeme a tus hombros o déjame subirte a los míos'],
+  ['Let\'s invent a cool secret handshake','Inventemos un saludo secreto'],
+  ['Ask someone for their email and let\'s write them a love poem together','Pídele el email a alguien y escribámosle juntos un poema de amor'],
+  ['Find someone with more than 10k Instagram followers','Encuentra a alguien con más de 10k seguidores en Instagram'],
+  ['Get a stranger to teach us a dance move','Consigamos que un desconocido nos enseñe un paso de baile'],
+  ['Start a conga line of at least 6 people','Montemos una conga de al menos 6 personas'],
+  ['Make me laugh in under 30 seconds','Hazme reír en menos de 30 segundos']
+];
+const Demo = {
+  _db(){
+    let d; try{ d = JSON.parse(store.get('sqg_demo3')||'null'); }catch(e){}
+    if(!d){
+      const quests = DEMO_SEED.map((s,i)=>({id:'q'+i,en:s[0],es:s[1],status:'active',from:'Aron',event:''}));
+      d = { events:[
+              {id:'e0',name:'Summer rooftop (demo)',subtitle:'Madrid · Aug 2026',theme:'party',current:false,created:1},
+              {id:'e1',name:'Halloween @ elrow',subtitle:'Madrid · 31 Oct 2026',theme:'halloween',current:true,created:2}],
+            quests,
+            links:[...quests.map(q=>({eventId:'e1',questId:q.id})), ...quests.slice(0,6).map(q=>({eventId:'e0',questId:q.id}))],
+            done:[{eventId:'e1',questId:'q3'},{eventId:'e0',questId:'q1'},{eventId:'e0',questId:'q2'}],
+            messages:[{id:'m0',eventId:'e1',name:'@lucia',text:'Best costume idea of the night 💀',created:Date.now()-600000,hidden:false},
+                      {id:'m1',eventId:'e0',name:'',text:'rooftop legends',created:Date.now()-9e9,hidden:false}] };
+      d.quests.push({id:'qp',en:'Steal a hat from the bartender (and give it back)',es:'Steal a hat from the bartender (and give it back)',status:'pending',from:'@marco.rr',event:'Halloween @ elrow'});
+    }
+    return d;
+  },
+  _save(d){ store.set('sqg_demo3', JSON.stringify(d)); },
+  _auth(pw){ if(pw!=='sqg123') throw new Error('Wrong password'); },
+  _cur(d){ return d.events.find(e=>e.current)||null; },
+  _link(d,eid,qid,on){ d.links=d.links.filter(l=>!(l.eventId===eid&&l.questId===qid)); if(on) d.links.push({eventId:eid,questId:qid}); },
+  getPublicData(){
+    const d=this._db(), ev=this._cur(d);
+    const quests = !ev ? [] : d.quests.filter(q=>q.status!=='pending' && d.links.some(l=>l.eventId===ev.id&&l.questId===q.id))
+      .map(q=>{ const n=d.done.filter(x=>x.eventId===ev.id&&x.questId===q.id).length; return {...q,status:n?'done':'active',doneCount:n}; });
+    const evId = ev?ev.id:'';
+    return { event:ev, quests, messages:d.messages.filter(m=>m.eventId===evId&&!m.hidden).sort((a,b)=>b.created-a.created), lifetime:d.done.length, now:Date.now() };
+  },
+  suggestQuest(text,ig){ const d=this._db(), ev=this._cur(d);
+    d.quests.push({id:'q'+Date.now(),en:text,es:text,status:'pending',from:handle(ig)||'anonymous',event:ev?ev.name:'off duty'}); this._save(d); return true; },
+  postMessage(name,text){ const d=this._db(), ev=this._cur(d); d.messages.push({id:'m'+Date.now(),eventId:ev?ev.id:'',name:handle(name),text,created:Date.now(),hidden:false}); this._save(d); return true; },
+  adminLogin(pw){ this._auth(pw); return true; },
+  adminData(pw){ this._auth(pw); const d=this._db();
+    const events = d.events.map(e=>{ const dn={}; d.done.filter(x=>x.eventId===e.id).forEach(x=>dn[x.questId]=(dn[x.questId]||0)+1);
+      return {...e, questIds:d.links.filter(l=>l.eventId===e.id).map(l=>l.questId), done:dn,
+        doneCount:d.done.filter(x=>x.eventId===e.id).length, msgCount:d.messages.filter(m=>m.eventId===e.id).length}; });
+    const cur = events.find(e=>e.current)||null;
+    return { events, current:cur, lifetime:d.done.length, messages:d.messages.slice().sort((a,b)=>b.created-a.created),
+      quests:d.quests.map(q=>({...q, inCurrent:!!cur&&cur.questIds.includes(q.id), doneHere:cur?(cur.done[q.id]||0):0,
+        timesDone:d.done.filter(x=>x.questId===q.id).length, eventIds:events.filter(e=>e.questIds.includes(q.id)).map(e=>e.id)})) }; },
+  adminSaveQuest(pw,q){ this._auth(pw); const d=this._db(); let id=q.id;
+    if(id) Object.assign(d.quests.find(z=>z.id===id),{en:q.en||q.es,es:q.es||q.en,status:q.status});
+    else { id='q'+Date.now(); d.quests.push({id,en:q.en||q.es,es:q.es||q.en,status:q.status||'active',from:'Aron'}); }
+    const cur=this._cur(d); if(q.addToEvent&&cur&&q.status!=='pending') this._link(d,cur.id,id,true);
+    this._save(d); return true; },
+  adminLinkQuest(pw,qid,on){ this._auth(pw); const d=this._db(), cur=this._cur(d); if(!cur) throw new Error('No event is running'); this._link(d,cur.id,qid,on); this._save(d); return true; },
+  adminSetDone(pw,qid,done){ this._auth(pw); const d=this._db(), ev=this._cur(d); if(!ev) throw new Error('No event is running');
+    if(done) d.done.push({eventId:ev.id,questId:qid,doneAt:Date.now()}); else { const i=d.done.map(x=>x.eventId===ev.id&&x.questId===qid).lastIndexOf(true); if(i>=0) d.done.splice(i,1); }
+    this._save(d); return true; },
+  adminDeleteQuest(pw,id){ this._auth(pw); const d=this._db(); d.quests=d.quests.filter(z=>z.id!==id); d.links=d.links.filter(l=>l.questId!==id); this._save(d); return true; },
+  adminSetMessageHidden(pw,id,h){ this._auth(pw); const d=this._db(); const m=d.messages.find(z=>z.id===id); if(m) m.hidden=!!h; this._save(d); return true; },
+  adminSaveEvent(pw,e,ids){ this._auth(pw); if(!String(e.name||'').trim()) throw new Error('Give the event a name'); const d=this._db();
+    if(e.id){ Object.assign(d.events.find(z=>z.id===e.id),{name:e.name,subtitle:e.subtitle,theme:e.theme}); }
+    else { const id='e'+Date.now(); d.events.forEach(x=>x.current=false);
+      d.events.push({id,name:e.name,subtitle:e.subtitle||'',theme:e.theme||'halloween',current:true,created:Date.now()});
+      (ids||[]).forEach(q=>d.links.push({eventId:id,questId:q})); }
+    this._save(d); return true; },
+  adminSetCurrentEvent(pw,id){ this._auth(pw); const d=this._db(); d.events.forEach(e=>e.current=!!id&&e.id===id); this._save(d); return true; }
+};
+
+/* ===== helpers ===== */
+function handle(s){ s = String(s||'').trim().replace(/^@+/,'').replace(/\s/g,''); return s ? '@'+s.slice(0,39) : ''; }
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function el(tag, attrs={}, ...kids){
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)){
+    if (k==='class') n.className=v; else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else n.setAttribute(k,v);
+  }
+  kids.flat().forEach(c => c!=null && n.append(c.nodeType ? c : document.createTextNode(c)));
+  return n;
+}
+function toast(msg){ const x=$('#toast'); x.textContent=msg; x.classList.add('show'); clearTimeout(x._t); x._t=setTimeout(()=>x.classList.remove('show'),2600); }
+const qText = q => (LANG==='es' ? (q.es||q.en) : (q.en||q.es));
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let clockOffset = 0;
+function ago(ts){
+  const s = Math.max(0, (Date.now()+clockOffset - ts)/1000);
+  if (s < 60) return t('now');
+  if (s < 3600) return Math.floor(s/60)+' '+t('min');
+  if (s < 86400) return Math.floor(s/3600)+' '+t('hr');
+  return Math.floor(s/86400)+' '+t('day');
+}
+
+/* ===== state ===== */
+let DATA = { event:null, quests:[], messages:[], lifetime:0 };
+let loaded = false;
+let current = null;
+let spins = 0;
+let view = null;
+
+async function load(){
+  try{
+    const d = await api('getPublicData');
+    const evChanged = loaded && ((d.event&&d.event.id) !== (DATA.event&&DATA.event.id));
+    DATA = d; loaded = true; clockOffset = (d.now||Date.now()) - Date.now();
+    applyTheme(); renderAll();
+    if (evChanged){ current=null; spins=0; resetReel(); }
+    if (!DATA.event && ['spin','choose','accept'].includes(view)) show('off');
+    else if (DATA.event && view==='off') show('spin');
+  }catch(e){ console.error(e); }
+}
+const active = () => DATA.quests.filter(q=>q.status==='active');
+const done = () => DATA.quests.filter(q=>q.status==='done');
+const evId = () => DATA.event ? DATA.event.id : '';
+
+/* ===== theme per event ===== */
+const THEMES = {
+  halloween:{ emoji:'🎃', bg:['🦇','👻','🕸️','🦇','💀','🎃','🦇'] },
+  party:{ emoji:'🪩', bg:['✨','🪩','🎉','⭐','🍸','✨','🎶'] }
+};
+function applyTheme(){
+  const th = (DATA.event && THEMES[DATA.event.theme]) ? DATA.event.theme : 'halloween';
+  if (document.body.dataset.theme === th) return;
+  document.body.dataset.theme = th;
+  $('#langEmoji').textContent = THEMES[th].emoji;
+  const bg = $('#bg'); bg.replaceChildren();
+  THEMES[th].bg.forEach((x,i)=>bg.append(el('span',{style:`left:${(i*14+5)%95}%;animation-delay:-${i*2.1}s;animation-duration:${12+i*1.7}s`},x)));
+}
+
+/* ===== language ===== */
+function applyLang(){
+  document.documentElement.lang = LANG||'en';
+  $$('[data-i18n]').forEach(n => n.textContent = t(n.dataset.i18n));
+  $$('[data-i18n-ph]').forEach(n => n.placeholder = t(n.dataset.i18nPh));
+  $('#quoteText').replaceChildren(...quoteWords().map(w=>el('span',{class:w.hl?'hl':''},w.w+' ')));
+  renderAll();
+}
+function setLang(l){ LANG=l; store.set('sqg_lang', l); applyLang(); }
+function quoteWords(){
+  const words = t('quote').split(' '), hl = t('quoteHl');
+  return words.map((w,i)=>({w, hl: i >= words.length-hl}));
+}
+
+/* ===== views ===== */
+function show(v){
+  if (loaded && !DATA.event && ['spin','choose','accept'].includes(v)) v = 'off';
+  if (loaded && DATA.event && v==='off') v = 'spin';
+  if (v !== view) window.scrollTo(0,0);
+  view = v;
+  $$('main > section').forEach(s => s.hidden = s.id !== 'v-'+v);
+  $('#top').hidden = v==='lang';
+  $('#menu').hidden = true;
+  if (v==='accept') renderAccept();
+  if (v==='admin') adminInit();
+}
+
+/* ===== quote intro ===== */
+function playIntro(){
+  const intro = $('#intro'), box = $('#introBox'), target = $('#quote');
+  const q = $('#introText');
+  const words = quoteWords();
+  const step = reduced ? 0 : 0.16;
+  q.replaceChildren(...words.map((w,i)=>el('span',{class:w.hl?'hl':'',style:`animation-delay:${(i*step).toFixed(2)}s`},w.w)));
+  q.querySelectorAll('span').forEach((s,i,a)=>{ if(i<a.length-1) s.after(' '); });
+  $('.introc').style.animationDelay = (words.length*step+0.2)+'s';
+  box.style.transform=''; box.style.opacity=''; $('.introbg').style.opacity='';
+  intro.hidden = false;
+  target.style.opacity = '0';
+  let gone = false;
+  const fly = () => {
+    if (gone) return; gone = true; clearTimeout(timer);
+    window.scrollTo(0,0);
+    const a = box.getBoundingClientRect(), b = target.getBoundingClientRect();
+    const sc = parseFloat(getComputedStyle(target.querySelector('p')).fontSize) / parseFloat(getComputedStyle(q).fontSize);
+    const dur = reduced ? 1 : 950;
+    box.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px) scale(${sc})`,opacity:.6}],
+      {duration:dur, easing:'cubic-bezier(.65,0,.2,1)', fill:'forwards'});
+    $('.introbg').animate([{opacity:1},{opacity:0}],{duration:dur*.9, easing:'ease-in', fill:'forwards'});
+    $('.skip').style.visibility='hidden';
+    setTimeout(()=>{ target.style.transition='opacity .35s'; target.style.opacity='1'; }, dur*.75);
+    setTimeout(()=>{ intro.hidden = true; $('.skip').style.visibility=''; box.getAnimations().forEach(x=>x.cancel()); $('.introbg').getAnimations().forEach(x=>x.cancel()); }, dur+120);
+  };
+  const timer = setTimeout(fly, (words.length*step*1000) + 2800);
+  intro.onclick = fly;
+}
+
+/* ===== render ===== */
+function renderAll(){
+  if(!LANG) { renderFooter(); return; }
+  renderProgress(); renderActiveBar(); renderChoose(); renderWall(); renderFooter();
+  if (view==='accept') renderAccept();
+  $('#allDone').hidden = active().length>0 || !DATA.quests.length;
+  $('#spinBtn').disabled = !DATA.quests.length;
+}
+function renderFooter(){
+  const ev = DATA.event;
+  $('#footEvent').textContent = ev ? (ev.name + (ev.subtitle ? ' · '+ev.subtitle : '')) : '';
+  $('#langEvent').textContent = ev ? ev.name : '';
+  $('#footLife').textContent = DATA.lifetime ? (DATA.lifetime===1 ? T[LANG||'en'].lifetime1 : T[LANG||'en'].lifetime.replace('{n}', DATA.lifetime)) : '';
+}
+function renderProgress(){
+  const d = done().length, tot = d + active().length;
+  $('#bar').style.width = tot ? (100*d/tot)+'%' : '0';
+  $('#progressTxt').textContent = t('progress').replace('{d}',d).replace('{t}',tot);
+}
+function getAccepted(){
+  try{ const a = JSON.parse(store.get('sqg_accepted')||'null'); return a && a.ev === evId() ? a : null; }catch(e){ return null; }
+}
+function renderActiveBar(){
+  const a = getAccepted(); const q = a && DATA.quests.find(x=>x.id===a.id);
+  const vis = !!(a && q && (q.doneCount||0) <= (a.n||0));
+  $('#activeBar').hidden = !vis;
+  if (vis) $('#activeText').textContent = qText(q);
+}
+function renderChoose(){
+  const list = $('#chooseList'); list.replaceChildren();
+  active().forEach((q,i) => list.append(
+    el('button',{class:'qbtn',onclick:()=>acceptQuest(q)}, el('span',{class:'n'},String(i+1)), el('span',{},qText(q)), el('span',{class:'go'},'→'))
+  ));
+  if (!active().length) list.append(el('p',{class:'sub'},t('allDone')));
+  $('#doneList').replaceChildren(...done().map(q=>el('li',{}, el('button',{class:'redo',title:t('againTitle'),onclick:()=>acceptQuest(q)},qText(q)))));
+  $('#doneWrap').hidden = !done().length; $('#doneCount').textContent = done().length;
+}
+function renderWall(){
+  const box = $('#msgs'); box.replaceChildren();
+  if (!DATA.messages.length){ box.append(el('div',{class:'empty'},t('wallEmpty'))); return; }
+  const COLORS = ['#a6ff3d','#ffb347','#ff4fa3','#4df3ff','#d59bff','#ffe14d','#ffffff'];
+  const hash = s => { let h=7; for (const c of String(s)) h=(h*31+c.charCodeAt(0))|0; return Math.abs(h); };
+  DATA.messages.forEach(m => {
+    const h = hash(m.id), len = m.text.length;
+    const sticker = h % 5 === 0;
+    const size = len < 25 ? 1.9 : len < 70 ? 1.4 : len < 140 ? 1.15 : 1;
+    const rot = ((h >> 3) % 9) - 4;
+    const side = ['flex-start','center','flex-end'][(h >> 5) % 3];
+    box.append(el('div',{class:'tagw '+(sticker?'sticker':'paint')+' f'+((h>>7)%4),
+      style:`font-size:${size}rem;transform:rotate(${rot}deg);align-self:${side};${sticker?'':'color:'+COLORS[(h>>2)%COLORS.length]}`},
+      el('span',{class:'tx'},m.text),
+      el('span',{class:'by'},'— '+(m.name||t('anon'))+' · '+ago(m.created))));
+  });
+}
+function renderAccept(){
+  const a = getAccepted(); const q = a && DATA.quests.find(x=>x.id===a.id);
+  if (!q) { if (loaded) return show('spin'); return; }
+  const isDone = (q.doneCount||0) > (a.n||0);   // completed since they accepted it
+  $('#accText').textContent = qText(q);
+  $('#ticket').classList.toggle('done', isDone);
+  $('#accKicker').textContent = t(isDone?'doneKicker':'accKicker');
+  $('#accNote').innerHTML = t(isDone?'doneNote':'accNote');   // static text from T only
+  $('#accChange').textContent = t(isDone?'anotherOne':'change');
+}
+
+/* ===== slot machine ===== */
+function resetReel(){
+  const reel=$('#reel'); reel.style.transition='none'; reel.style.transform='translateY(0)';
+  reel.replaceChildren(el('div',{class:'item q'},'? ? ?'));
+  $('#preSpin').hidden=false; $('#postSpin').hidden=true;
+}
+function spin(){
+  const pool = DATA.quests;                       // everything, done ones included
+  if (!pool.length) return;
+  const choices = pool.length>1 && current ? pool.filter(q=>q.id!==current.id) : pool;
+  const weights = choices.map(q => q.status==='done' ? 0.5 : 1);   // done tonight = half the chance
+  let roll = Math.random() * weights.reduce((a,b)=>a+b,0), pick = choices[choices.length-1];
+  for (let i=0;i<choices.length;i++){ roll -= weights[i]; if (roll <= 0){ pick = choices[i]; break; } }
+  $('#repeatNote').hidden = true;
+  const filler = [];
+  while (filler.length < 22) filler.push(...shuffle(pool));
+  const items = [...filler.slice(0,22), pick];
+  const reel = $('#reel');
+  reel.style.transition = 'none'; reel.style.transform = 'translateY(0)';
+  reel.replaceChildren(el('div',{class:'item'+(current?'':' q')},current?qText(current):'? ? ?'), ...items.map(q=>el('div',{class:'item'},qText(q))));
+  const h = reel.firstChild.getBoundingClientRect().height;
+  void reel.offsetHeight;
+  reel.style.transition = 'transform 2.8s cubic-bezier(.12,.75,.18,1)';
+  reel.style.transform = `translateY(-${items.length*h}px)`;
+  $('#machine').classList.add('spinning');
+  $('#preSpin').hidden = true; $('#postSpin').hidden = true;
+  current = pick; spins++;
+  setTimeout(() => {
+    $('#machine').classList.remove('spinning');
+    reel.lastChild.classList.add('result-pop');
+    try{ navigator.vibrate && navigator.vibrate([30,40,60]); }catch(e){}
+    $('#postSpin').hidden = false;
+    $('#repeatNote').hidden = pick.status !== 'done';
+    $('#chooseBtn').hidden = spins < 2;
+    $('#pickyHint').hidden = spins < 3;
+    $('#chooseBtn').className = 'btn ' + (spins >= 3 ? 'primary' : 'ghost');
+  }, 2900);
+}
+function acceptQuest(q){
+  store.set('sqg_accepted', JSON.stringify({id:q.id, ev:evId(), n:q.doneCount||0}));
+  show('accept');
+}
+
+/* ===== wiring ===== */
+$$('.pitch-slot').forEach(s => s.replaceWith($('#pitchTpl').content.cloneNode(true)));
+$$('[data-lang]').forEach(b => b.addEventListener('click', () => {
+  setLang(b.dataset.lang); show(DATA.event || !loaded ? 'spin' : 'off');
+  if (view === 'spin') playIntro();
+}));
+$('#langSwitch').addEventListener('click', () => { setLang(LANG==='en'?'es':'en'); $('#menu').hidden=true; });
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) show(g.dataset.go); });
+$('#burger').addEventListener('click', () => $('#menu').hidden=false);
+$('#menuClose').addEventListener('click', () => $('#menu').hidden=true);
+$('#spinBtn').addEventListener('click', spin);
+$('#againBtn').addEventListener('click', spin);
+$('#acceptBtn').addEventListener('click', () => current && acceptQuest(current));
+$('#activeBar').addEventListener('click', () => show('accept'));
+$('#accChange').addEventListener('click', () => {
+  const a=getAccepted(), q=a&&DATA.quests.find(x=>x.id===a.id);
+  if (q && (q.doneCount||0) > (a.n||0)){ store.del('sqg_accepted'); resetReel(); current=null; spins=0; show('spin'); } else show('choose');
+});
+let taps=[]; $('#logo').addEventListener('click', () => {
+  const n=Date.now(); taps=taps.filter(x=>n-x<2500); taps.push(n);
+  if (taps.length>=5){ taps=[]; show('admin'); } else if (taps.length===1) show('spin');
+});
+
+$('#inventText').addEventListener('input', e => $('#inventCount').textContent = e.target.value.length);
+$('#inventForm').addEventListener('submit', async e => {
+  e.preventDefault(); const b=$('#inventForm button'); b.disabled=true;
+  try{
+    await api('suggestQuest', $('#inventText').value, $('#inventName').value);
+    $('#inventThanksTxt').textContent = t(DATA.event ? 'inventThanks' : 'inventThanksOff');
+    $('#inventForm').hidden=true; $('#inventThanks').hidden=false; $('#inventPitch').hidden=false;
+    $('#inventText').value=''; $('#inventCount').textContent='0';
+  }catch(err){ toast(t('err')); }
+  b.disabled=false;
+});
+$('#inventMore').addEventListener('click', () => { $('#inventForm').hidden=false; $('#inventThanks').hidden=true; });
+$('#wallForm').addEventListener('submit', async e => {
+  e.preventDefault(); const b=$('#wallForm button'); b.disabled=true;
+  try{
+    await api('postMessage', $('#wallName').value, $('#wallText').value);
+    $('#wallText').value=''; toast(t('posted')); await load();
+  }catch(err){ toast(t('err')); }
+  b.disabled=false;
+});
+
+/* ===== admin (behind "Terms and conditions") ===== */
+let PW = store.get('sqg_pw'), ADATA = null, TAB = 'quests', SEARCH = '', BUSY = false;
+let NEWEV = null;   // state of the "new event" form: {name, subtitle, theme, sel:Set, search}
+const OPEN = new Set();   // past events with details expanded
+function adminInit(){
+  $('#tcCover').hidden = !!PW; $('#adminPanel').hidden = !PW;
+  if (PW) adminLoad();
+}
+async function adminLoad(){
+  try{ ADATA = await api('adminData', PW); adminRender(); }
+  catch(e){ toast(String(e.message||e)); PW=null; store.del('sqg_pw'); $('#tcCover').hidden=false; $('#adminPanel').hidden=true; }
+}
+async function adminDo(fn, ...args){
+  if (BUSY) return false; BUSY = true; document.body.classList.add('busy');
+  let ok = false;
+  try{ await api(fn, PW, ...args); ok = true; toast('Saved ✓'); await adminLoad(); load(); }
+  catch(e){ toast(String(e.message||e)); }
+  finally{ BUSY = false; document.body.classList.remove('busy'); }
+  return ok;
+}
+const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const matches = (q, s) => !s || norm(q.en+' '+q.es).includes(norm(s.trim()));
+const evName = id => (ADATA.events.find(e=>e.id===id)||{}).name || '?';
+function editor(q, onSave, saveLabel){
+  const en = el('textarea',{rows:'2',placeholder:'English'}); en.value = q.en||'';
+  const es = el('textarea',{rows:'2',placeholder:'Español'}); es.value = q.es||'';
+  return el('div',{class:'edit'}, en, es, el('div',{class:'arow'}, el('button',{class:'ok',onclick:()=>onSave(en.value,es.value)},saveLabel)));
+}
+function evFields(e){
+  const name = el('input',{type:'text',placeholder:'Event name (e.g. NYE @ Fabrik)',maxlength:'60'}); name.value=e.name||'';
+  const sub = el('input',{type:'text',placeholder:'Subtitle (e.g. Madrid · 31 Dec 2026)',maxlength:'80'}); sub.value=e.subtitle||'';
+  const th = el('select',{}, el('option',{value:'halloween'},'🎃 Halloween look'), el('option',{value:'party'},'🪩 Party look')); th.value=e.theme||'halloween';
+  return {name, sub, th, read:()=>({...e,name:name.value,subtitle:sub.value,theme:th.value})};
+}
+function evEditor(e, onSave, label){
+  const f = evFields(e);
+  return el('div',{class:'edit'}, f.name, f.sub, f.th, el('div',{class:'arow'}, el('button',{class:'ok',onclick:()=>onSave(f.read())},label)));
+}
+function fromNode(q){
+  return /^@\w/.test(q.from) ? el('a',{href:'https://instagram.com/'+q.from.slice(1),target:'_blank',rel:'noopener',style:'color:var(--orange2)'},q.from) : (q.from||'anonymous');
+}
+function searchBox(onInput, value, ph){
+  const s = el('input',{type:'search',placeholder:ph||'🔍 Search quests (English or Spanish)…'}); s.value = value||'';
+  s.addEventListener('input', () => onInput(s.value)); return s;
+}
+
+/* -- Quests of the live event -- */
+function drawQuests(list){
+  const cur = ADATA.current;
+  const qs = ADATA.quests.filter(q=>q.inCurrent && matches(q,SEARCH)).sort((a,b)=> (a.doneHere>0) - (b.doneHere>0));
+  list.replaceChildren();
+  if (!qs.length) list.append(el('p',{class:'empty'}, SEARCH ? 'No quests match.' : 'This event has no quests yet — add some from the Library.'));
+  qs.forEach(q => {
+    const n = q.doneHere||0;
+    const card = el('div',{class:'acard'+(n?' isdone':'')},
+      el('div',{class:'t'}, (n?'✓ ':'')+q.en, el('small',{}, q.es + (n?` · done ${n}× tonight`:'') + (q.timesDone?` · ${q.timesDone}× all-time`:''))));
+    const row = el('div',{class:'arow'});
+    row.append(el('button',{class:'ok',onclick:()=>adminDo('adminSetDone',q.id,true)}, n?'✓ Again':'✓ Done'));
+    if (n) row.append(el('button',{onclick:()=>adminDo('adminSetDone',q.id,false)},'↺ Undo'));
+    row.append(el('button',{onclick:()=>row.replaceWith(editor(q,(en,es)=>adminDo('adminSaveQuest',{...q,en,es}),'Save'))},'Edit'));
+    row.append(el('button',{class:'warn',onclick:()=>adminDo('adminLinkQuest',q.id,false)},'Remove'));
+    card.append(row); list.append(card);
+  });
+}
+/* -- Library: every quest not in the live event -- */
+function drawLibrary(list){
+  const cur = ADATA.current;
+  const qs = ADATA.quests.filter(q=>q.status==='active' && !q.inCurrent && matches(q,SEARCH));
+  list.replaceChildren();
+  if (!qs.length) list.append(el('p',{class:'empty'}, SEARCH ? 'No quests match.' : 'Every quest is already in the live event.'));
+  qs.forEach(q => {
+    const used = q.eventIds.map(evName).join(', ');
+    const card = el('div',{class:'acard'}, el('div',{class:'t'}, q.en, el('small',{}, q.es + (used?' · used at: '+used:' · never used') + (q.timesDone?` · ${q.timesDone}× done`:''))));
+    const row = el('div',{class:'arow'});
+    if (cur) row.append(el('button',{class:'ok',onclick:()=>adminDo('adminLinkQuest',q.id,true)},'+ Add to '+cur.name));
+    row.append(el('button',{onclick:()=>row.replaceWith(editor(q,(en,es)=>adminDo('adminSaveQuest',{...q,en,es}),'Save'))},'Edit'));
+    row.append(el('button',{class:'warn',onclick:()=>confirm('Delete this quest forever (from every event)?')&&adminDo('adminDeleteQuest',q.id)},'Delete'));
+    card.append(row); list.append(card);
+  });
+}
+/* -- New event form with quest import -- */
+function newEventForm(){
+  const lib = ADATA.quests.filter(q=>q.status==='active');
+  const f = evFields(NEWEV);
+  [f.name,f.sub,f.th].forEach(x=>x.addEventListener('input',()=>Object.assign(NEWEV,f.read())));
+  const count = el('b',{});
+  const list = el('div',{class:'picklist'});
+  const draw = () => {
+    list.replaceChildren();
+    lib.filter(q=>matches(q,NEWEV.search)).forEach(q => {
+      const cb = el('input',{type:'checkbox'}); cb.checked = NEWEV.sel.has(q.id);
+      cb.addEventListener('change',()=>{ cb.checked?NEWEV.sel.add(q.id):NEWEV.sel.delete(q.id); count.textContent=NEWEV.sel.size; });
+      const used = q.eventIds.map(evName).join(', ');
+      list.append(el('label',{class:'pick'}, cb, el('span',{}, q.en, el('small',{}, used ? 'from: '+used : 'never used yet'))));
+    });
+    count.textContent = NEWEV.sel.size;
+  };
+  const quick = el('div',{class:'chips'},
+    el('button',{onclick:()=>{ lib.forEach(q=>NEWEV.sel.add(q.id)); draw(); }},'All'),
+    el('button',{onclick:()=>{ NEWEV.sel.clear(); draw(); }},'None'),
+    ...ADATA.events.slice().sort((a,b)=>b.created-a.created).map(e =>
+      el('button',{onclick:()=>{ e.questIds.forEach(id=>NEWEV.sel.add(id)); draw(); }},'+ all from '+e.name)));
+  draw();
+  return el('div',{class:'acard newev'},
+    el('div',{class:'t'},'New event', el('small',{},'It becomes the live event right away. The previous one moves to Past events.')),
+    el('div',{class:'edit'}, f.name, f.sub, f.th),
+    el('div',{class:'t',style:'margin-top:1rem'},'Quests to bring in', el('small',{},'Pick from your older events. You can still add or remove quests later.')),
+    quick,
+    searchBox(v=>{ NEWEV.search=v; draw(); }, NEWEV.search, '🔍 Search…'),
+    list,
+    el('div',{class:'arow'},
+      el('button',{onclick:()=>{ NEWEV=null; adminRender(); }},'Cancel'),
+      el('button',{class:'ok',onclick:async()=>{
+        const e = f.read(); if(!e.name.trim()) return toast('Give the event a name');
+        if(!confirm(`Create “${e.name}” with ${NEWEV.sel.size} quests and make it live?`)) return;
+        const ids=[...NEWEV.sel]; const keep=NEWEV; NEWEV=null;
+        if(!(await adminDo('adminSaveEvent',{name:e.name,subtitle:e.subtitle,theme:e.theme},ids))) { NEWEV=keep; adminRender(); }
+        else { TAB='quests'; adminRender(); }
+      }}, el('span',{},'Create & go live (', count, ')'))));
+}
+function eventDetails(e){
+  const qs = Object.entries(e.done).map(([id,n])=>{ const q=ADATA.quests.find(x=>x.id===id); return el('li',{}, (q?q.en:'(deleted quest)')+(n>1?` ×${n}`:'')); });
+  const ms = ADATA.messages.filter(m=>m.eventId===e.id);
+  return el('div',{class:'details'},
+    el('div',{class:'t'},'Completed'), qs.length ? el('ul',{},qs) : el('p',{class:'sub'},'Nothing completed.'),
+    el('div',{class:'t'},'Wall'), ms.length ? el('ul',{},ms.map(m=>el('li',{}, m.text+' — '+(m.name||'anonymous')+(m.hidden?' (hidden)':'')))) : el('p',{class:'sub'},'No messages.'));
+}
+function adminRender(){
+  const qs = ADATA.quests, cur = ADATA.current, box = $('#adminList'); box.replaceChildren();
+  const pend = qs.filter(q=>q.status==='pending');
+  $('#pendBadge').hidden = !pend.length; $('#pendBadge').textContent = pend.length;
+  $$('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===TAB));
+  const tonight = qs.reduce((a,q)=>a+(q.doneHere||0),0);
+  $('#curEv').replaceChildren(cur
+    ? el('span',{}, '🟢 Live: ', el('b',{},cur.name), ` · ${tonight} done · ${qs.filter(q=>q.inCurrent).length} quests · ${ADATA.lifetime} all-time`)
+    : el('span',{}, '⚪ No event running — the site shows “off duty”. Create or reopen one in Events.'));
+  const empty = txt => box.append(el('p',{class:'empty'},txt));
+
+  if (TAB==='quests' || TAB==='library'){
+    if (!cur) box.append(el('p',{class:'sub'},'No live event — start one in Events.'));
+    if (TAB==='library') box.append(el('p',{class:'sub'},'Every quest you’ve ever had that isn’t in the live event.'));
+    const list = el('div',{});
+    const draw = TAB==='quests' ? drawQuests : drawLibrary;
+    box.append(searchBox(v=>{ SEARCH=v; draw(list); }, SEARCH), list); draw(list);
+  }
+  if (TAB==='pending'){
+    if (!pend.length) empty('No suggestions waiting.');
+    pend.forEach(q => {
+      const card = el('div',{class:'acard'}, el('div',{class:'t'}, q.en, el('small',{},'from ', fromNode(q), q.event?' · '+q.event:'')));
+      const ed = editor(q,(en,es)=>adminDo('adminSaveQuest',{...q,en,es,status:'active',addToEvent:true}), cur ? '✓ Approve & add to '+cur.name : '✓ Approve to library');
+      ed.querySelector('.arow').append(el('button',{class:'warn',onclick:()=>adminDo('adminDeleteQuest',q.id)},'✕ Reject'));
+      card.append(ed); box.append(card);
+    });
+  }
+  if (TAB==='msgs'){
+    const evId = cur ? cur.id : '';
+    const ms = ADATA.messages.filter(m=>m.eventId===evId);
+    box.append(el('p',{class:'sub'}, cur ? 'Wall for '+cur.name : 'Off-duty wall (no event running)'));
+    if (!ms.length) empty('No messages yet.');
+    ms.forEach(m => box.append(el('div',{class:'acard'+(m.hidden?' isdone':'')},
+      el('div',{class:'t'}, m.text, el('small',{},'— ', /^@\w/.test(m.name)?fromNode({from:m.name}):(m.name||'anonymous'), ' · '+ago(m.created)+(m.hidden?' · hidden':''))),
+      el('div',{class:'arow'}, el('button',{class:m.hidden?'':'warn',onclick:()=>adminDo('adminSetMessageHidden',m.id,!m.hidden)}, m.hidden?'Show again':'Hide')))));
+  }
+  if (TAB==='events'){
+    if (NEWEV) box.append(newEventForm());
+    else box.append(el('button',{class:'btn primary',style:'margin-bottom:1rem',onclick:()=>{
+      const latest = ADATA.events.slice().sort((a,b)=>b.created-a.created)[0];
+      NEWEV = {name:'',subtitle:'',theme:'party',search:'',sel:new Set(latest?latest.questIds:[])}; adminRender(); }},'+ New event'));
+    const sorted = ADATA.events.slice().sort((a,b)=>b.created-a.created);
+    const card = (e) => {
+      const c = el('div',{class:'acard'+(e.current?' live':'')},
+        el('div',{class:'t'}, (e.current?'🟢 ':'')+e.name, el('small',{}, [e.subtitle, e.theme==='party'?'🪩 party look':'🎃 halloween look', e.questIds.length+' quests', e.doneCount+' done', e.msgCount+' messages'].filter(Boolean).join(' · '))));
+      const row = el('div',{class:'arow'});
+      if (e.current) row.append(el('button',{class:'warn',onclick:()=>confirm('End this event? The site will show “off duty” until you start or reopen one.')&&adminDo('adminSetCurrentEvent','')},'■ End event'));
+      else row.append(el('button',{onclick:()=>confirm(`Make “${e.name}” live again?`)&&adminDo('adminSetCurrentEvent',e.id)},'▶ Reopen'));
+      row.append(el('button',{onclick:()=>{ OPEN.has(e.id)?OPEN.delete(e.id):OPEN.add(e.id); adminRender(); }}, OPEN.has(e.id)?'Hide details':'Details'));
+      row.append(el('button',{onclick:()=>row.replaceWith(evEditor(e, x=>adminDo('adminSaveEvent',x), 'Save'))},'Edit'));
+      c.append(row); if (OPEN.has(e.id)) c.append(eventDetails(e));
+      return c;
+    };
+    if (cur) { box.append(el('h3',{class:'sect'},'Live now')); box.append(card(cur)); }
+    const past = sorted.filter(e=>!e.current);
+    box.append(el('h3',{class:'sect'},'Past events'));
+    if (!past.length) empty('No past events yet.');
+    past.forEach(e=>box.append(card(e)));
+  }
+  if (TAB==='add'){
+    box.append(el('div',{class:'acard'}, el('div',{class:'t'},'New quest', el('small',{}, cur ? 'Added to your library and to '+cur.name+'.' : 'Added to your library.')),
+      editor({en:'',es:''},(en,es)=>{ if(!en.trim()&&!es.trim()) return toast('Write something first'); TAB='quests'; adminDo('adminSaveQuest',{en,es,status:'active',addToEvent:true}); },'+ Add quest')));
+  }
+}
+$('#tabs').addEventListener('click', e => { const b=e.target.closest('[data-tab]'); if(!b) return; TAB=b.dataset.tab; SEARCH=''; adminRender(); });
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault(); const pw=$('#pw').value;
+  try{ await api('adminLogin', pw); PW=pw; store.set('sqg_pw',pw); $('#pw').value=''; adminInit(); }
+  catch(err){ toast(String(err.message||err)); }
+});
+$('#adminRefresh').addEventListener('click', adminLoad);
+$('#adminLogout').addEventListener('click', () => { PW=null; store.del('sqg_pw'); adminInit(); });
+
+/* ===== eyes peeking out of the menu button every 20–30 s ===== */
+function peek(){
+  if (!document.hidden && $('#menu').hidden && !$('#top').hidden && $('#intro').hidden){
+    const p=$('#peek'), b=$('#burger');
+    p.classList.remove('go'); b.classList.remove('flash'); void p.offsetWidth;
+    p.classList.add('go'); b.classList.add('flash');
+  }
+  setTimeout(peek, 20000 + Math.random()*10000);
+}
+setTimeout(peek, 12000);
+
+/* ===== boot ===== */
+(async function boot(){
+  applyTheme();
+  const params = Object.fromEntries(new URLSearchParams(location.search));
+  if (!LANG && params.lang && T[params.lang]) LANG = params.lang;
+  applyLang();
+  if ('admin' in params){ LANG = LANG || 'en'; applyLang(); show('admin'); }
+  else show(LANG ? 'spin' : 'lang');
+  await load();
+  setInterval(() => { if (!document.hidden) load(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+})();
+</script>
+</body>
+</html>
